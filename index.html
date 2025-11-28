@@ -1,56 +1,229 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كنوز الأمثال العربية</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body>
-    <div id="root"></div>
-    <script type="text/babel" src="app.js"></script>
-</body>
-</html>
-```
+import React, { useState, useMemo, useEffect } from 'react';
+import { Search, BookOpen, Sparkles, Copy, Check } from 'lucide-react';
 
-**2. ملف `app.js`:**
-- الصق الكود الذي نسخته من التطبيق هنا
+const ArabicProverbsApp = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [copied, setCopied] = useState(null);
+  const [highlightedIndex, setHighlightedIndex] = useState(null);
 
-## 🚀 **الخطوة 3: رفع المشروع على GitHub**
+  const proverbs = [
+    "حنت ولات هنت وأنى لك مقروع",
+    "حسبك من شر سماعه",
+    "حفظا من كالئك",
+    "حديث خرافة",
+    "احلب حلبا لك شطره",
+    "حذو القذة بالقذة",
+    "حلمي أصم وأذني غير صماء",
+    "حور في محارة",
+    "حلب الدهر أشطره",
+    "حسبك من غنى شبع وري",
+    "حسبك من القلادة ما أحاك بالعنق",
+    "حبلك على غاربك",
+    "حبك الشيء يعمي ويصم",
+    "حبيب إلى عبد من كده",
+    "حسن في كل عين ما تود",
+    "حتنى لا خير في سهم زلخ",
+    "حرة تحت قرة",
+    "الحرب خدعة",
+    "الحديث ذو شجون",
+    "حوتا تماقس",
+    "حدس لهم بمطفئة الرضف",
+    "حرامه يركب من لا حلال له",
+    "الحسن أحمر",
+    "حانية مختضبة",
+    "حميم المرء واصله",
+    "حب إلى عبد محكده",
+    "احمل العبد على فرس فإن هلك هلك وإن عاش فلك",
+    "حدثني فاه إلى في",
+    "حولها من ظهرك إلى بطنك",
+    "أحشك وتروثني",
+    "أحلبت ناقتك أم أجلبت",
+    "أحاديث الضبع استها",
+    "أحب أهل الكلب إليه الظاعن",
+    "أحب أهل الكلب إليه خانقه",
+    "حلقت به عنقاء مغرب",
+    "حدأ حدأ وراءك بندقه",
+    "حيث ما ساءك فالعكلى فيه",
+    "حل بواد ضبه مكون",
+    "حمدا إذا استغنيت كان أكرم",
+    "حد إكام وانصراد وغسم",
+    "حنظلة الجراح ليست للعب",
+    "حوبك هل يعتم بالسمار",
+    "أحبض وهو يدعيه مخطا",
+    "حجا ببيت يبتغي زاد السفر",
+    "حيضة حسناء ليست تملك",
+    "أحمق يمطخ الماء",
+    "احتلب فروه",
+    "حتى يرجع السهم على فوقه",
+    "حتى يرجع الدر في الضرع",
+    "حين ومن يملك أقدار الحين؟",
+    "حافظ على الصديق ولو في الحريق",
+    "أحق الخيل بالركض المعار",
+    "احترس من العين فوالله لهي أنم عليك من اللسان",
+    "حل عنك فاظعن",
+    "أحاديث الصم إذا سكروا",
+    "أحاديث طسم وأحلامها",
+    "حال الأجل دون الأمل",
+    "حبذا وطأة الميل",
+    "حولها من عجز إلي غارب",
+    "حين تقلين تدرين",
+    "أحمق بلغ",
+    "الحزم حفظ ما كلفت وترك ما كفيت",
+    "حبيب جاء على فاقة",
+    "حمل الدهيم وما تزبي",
+    "الحمى أضرعتني لك",
+    "حول الصليان الزمزمة",
+    "الحرب غشوم",
+    "الحذر قبل إرسال السهم",
+    "حلس كشف نفسه",
+    "احفظ ما في الوعاء بشد الوكاء"
+  ];
 
-### أ) إنشاء حساب GitHub (إذا لم يكن لديك):
-1. اذهب إلى [github.com](https://github.com)
-2. اضغط على "Sign up"
-3. أكمل التسجيل
+  const filteredProverbs = useMemo(() => {
+    if (!searchTerm.trim()) return [];
+    return proverbs.filter(proverb => 
+      proverb.includes(searchTerm.trim())
+    );
+  }, [searchTerm]);
 
-### ب) إنشاء مستودع جديد:
-1. اضغط على زر **"+"** في أعلى يمين الصفحة
-2. اختر **"New repository"**
-3. املأ البيانات:
-   - **Repository name**: `arabic-proverbs` (أو أي اسم تريده)
-   - اختر **"Public"**
-   - ✅ ضع علامة على **"Add a README file"**
-4. اضغط **"Create repository"**
+  const handleCopy = (proverb, index) => {
+    navigator.clipboard.writeText(proverb);
+    setCopied(index);
+    setTimeout(() => setCopied(null), 2000);
+  };
 
-### ج) رفع الملفات:
-1. في صفحة المستودع، اضغط **"Add file"** → **"Upload files"**
-2. اسحب الملفات (`index.html` و `app.js`) إلى الصفحة
-3. اضغط **"Commit changes"**
+  const highlightText = (text, search) => {
+    if (!search.trim()) return text;
+    const parts = text.split(new RegExp(`(${search})`, 'gi'));
+    return parts.map((part, i) => 
+      part.toLowerCase() === search.toLowerCase() 
+        ? <span key={i} className="bg-yellow-300 text-gray-900 rounded px-1">{part}</span>
+        : part
+    );
+  };
 
-## 🌍 **الخطوة 4: تفعيل GitHub Pages**
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100" dir="rtl">
+      {/* Header */}
+      <header className="bg-gradient-to-l from-amber-600 to-orange-600 text-white shadow-2xl">
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <BookOpen className="w-10 h-10" />
+            <h1 className="text-4xl font-bold">كنوز الأمثال العربية</h1>
+            <Sparkles className="w-8 h-8" />
+          </div>
+          <p className="text-center text-amber-100 text-lg">
+            اكتشف حكمة الأجداد في {proverbs.length} مثل عربي أصيل
+          </p>
+        </div>
+      </header>
 
-1. في صفحة المستودع، اضغط على **"Settings"** (الإعدادات)
-2. من القائمة اليسرى، اختر **"Pages"**
-3. في قسم **"Source"**:
-   - اختر **"Deploy from a branch"**
-   - Branch: اختر **"main"**
-   - Folder: اختر **"/ (root)"**
-4. اضغط **"Save"**
-5. انتظر دقيقة واحدة، ثم أعد تحميل الصفحة
+      {/* Main Content */}
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        {/* Search Box */}
+        <div className="mb-8">
+          <div className="relative">
+            <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-amber-600 w-6 h-6" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="ابحث في الأمثال..."
+              className="w-full pr-14 pl-6 py-4 text-xl rounded-2xl border-2 border-amber-300 focus:border-amber-500 focus:ring-4 focus:ring-amber-200 outline-none transition-all shadow-lg bg-white"
+            />
+          </div>
+          
+          {/* Results Count */}
+          <div className="mt-4 text-center">
+            {searchTerm.trim() ? (
+              <span className="inline-block bg-white px-6 py-2 rounded-full shadow-md text-gray-700 font-semibold">
+                نتائج البحث: {filteredProverbs.length} من {proverbs.length}
+              </span>
+            ) : (
+              <span className="inline-block bg-amber-100 px-6 py-3 rounded-full shadow-md text-amber-800 font-semibold text-lg">
+                ابدأ بالكتابة للبحث في {proverbs.length} مثل عربي
+              </span>
+            )}
+          </div>
+        </div>
 
-ستجد رابط موقعك على شكل:
-```
-https://[اسم-المستخدم].github.io/[اسم-المستودع]
+        {/* Proverbs Grid */}
+        {searchTerm.trim() && filteredProverbs.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {filteredProverbs.map((proverb, index) => (
+              <div
+                key={index}
+                className="group bg-white rounded-xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-amber-400 cursor-pointer"
+                onMouseEnter={() => setHighlightedIndex(index)}
+                onMouseLeave={() => setHighlightedIndex(null)}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 text-white rounded-full flex items-center justify-center font-bold shadow-md">
+                        {index + 1}
+                      </span>
+                      <div className="w-full h-0.5 bg-gradient-to-l from-amber-300 to-transparent"></div>
+                    </div>
+                    <p className="text-xl leading-relaxed text-gray-800 font-semibold">
+                      {highlightText(proverb, searchTerm)}
+                    </p>
+                  </div>
+                  
+                  <button
+                    onClick={() => handleCopy(proverb, index)}
+                    className="flex-shrink-0 p-2 rounded-lg hover:bg-amber-100 transition-colors"
+                    title="نسخ"
+                  >
+                    {copied === index ? (
+                      <Check className="w-5 h-5 text-green-600" />
+                    ) : (
+                      <Copy className="w-5 h-5 text-gray-400 group-hover:text-amber-600" />
+                    )}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : searchTerm.trim() ? (
+          <div className="text-center py-16">
+            <div className="bg-white rounded-2xl shadow-xl p-12 max-w-md mx-auto">
+              <Search className="w-20 h-20 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold text-gray-700 mb-2">لا توجد نتائج</h3>
+              <p className="text-gray-500">جرب البحث بكلمات أخرى</p>
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-16">
+            <div className="bg-gradient-to-br from-white to-amber-50 rounded-2xl shadow-xl p-12 max-w-2xl mx-auto border-2 border-amber-200">
+              <BookOpen className="w-24 h-24 text-amber-500 mx-auto mb-6" />
+              <h3 className="text-3xl font-bold text-gray-800 mb-4">مرحباً بك في كنوز الأمثال</h3>
+              <p className="text-xl text-gray-600 mb-6">
+                استخدم مربع البحث أعلاه للعثور على الأمثال العربية
+              </p>
+              <div className="bg-amber-100 rounded-xl p-6 border-r-4 border-amber-500">
+                <p className="text-gray-700 text-lg">
+                  💡 <strong>نصيحة:</strong> يمكنك البحث بأي كلمة أو جزء من المثل
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-gradient-to-l from-amber-600 to-orange-600 text-white mt-16 py-8">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <p className="text-lg mb-2">
+            من الأمثال العربية القديمة • تراث عربي أصيل
+          </p>
+          <p className="text-amber-100 text-sm">
+            مجموعة من الأمثال العربية التي تحمل حكمة الأجداد وتجاربهم
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default ArabicProverbsApp;
